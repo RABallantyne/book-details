@@ -16,6 +16,39 @@ public class GraphQLDataFetchers {
     "authorId", "author-3")
   );
 
-  
+  private static List<Map<String, String>> authors = Arrays.asList(
+            ImmutableMap.of("id", "author-1",
+                    "firstName", "Joanne",
+                    "lastName", "Rowling"),
+            ImmutableMap.of("id", "author-2",
+                    "firstName", "Herman",
+                    "lastName", "Melville"),
+            ImmutableMap.of("id", "author-3",
+                    "firstName", "Anne",
+                    "lastName", "Rice")
+    );
+
+    public DataFetcher getBookByIdDataFetcher(){
+      return dataFetchingEnvironment -> {
+        String bookId = dataFetchingEnvironment.getArgument("id");
+        return books
+          .stream()
+          .filter(book -> book.get("id").equals(bookId))
+          .findFirst()
+          .orElse(null);
+      };
+    }
+
+    public DataFetcher getAuthorDataFetcher() {
+      return dataFetchingEnvironment -> {
+        Map<String,String> book = dataFetchingEnvironment.getSource();
+        String authorId = book.get("authorId");
+        return authors
+          .stream()
+          .filter(author -> author.get("id").equals(authorId))
+          .findFirst()
+          .orElse(null);
+      };
+    }
   
 }
